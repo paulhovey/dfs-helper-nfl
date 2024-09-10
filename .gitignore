@@ -2,3 +2,6 @@
 **/csv/
 **/results/
 **/rawdata/
+
+# virtual environment folder
+yahoo-dfs/

@@ -69,11 +69,15 @@ def define_problem(players, format):
         model += (TE_constraint >= 1)
         model += (total_players == 9)
     else:
+        # TODO: config file?
         model += (total_cost <= 200)
         model += (QB_constraint == 1)
+        model += (RB_constraint >= 2)
         model += (RB_constraint <= 3)
+        model += (WR_constraint >= 3)
         model += (WR_constraint <= 4)
-        model += (TE_constraint == 1)
+        model += (TE_constraint >= 1)
+        model += (TE_constraint <= 2)
         model += (DST_constraint == 1)
         model += (total_players == 9)
     return model

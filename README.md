@@ -6,6 +6,15 @@ This repository contains a couple of Python scripts that automate the creation o
 
 Currently supports Yahoo main slate Sunday matches and OwnersBox Thursday thru Monday games.
 
+## Setup:
+
+Run inside a virtual environment.  Make sure python-venv is available.  Then run these commands from the repository root directory:
+
+```bash
+python -m venv yahoo-dfs
+yahoo-dfs/bin/pip install -r requirements.txt
+```
+
 ## How to use:
 
 `> python fetch_data.py <format>`

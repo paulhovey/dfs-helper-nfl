@@ -41,7 +41,7 @@ def fetch_fp_data():
 
 # Fantasy Pros player names include the abbreviation of their team; it needs to be removed
 def remove_team_abb(name):
-    player = re.findall('(.*)\s[A-Z]{2,3}', name)
+    player = re.findall(r'(.*)\s[A-Z]{2,3}', name)
     if player:
         return player[0]
     return name # this will be a DST
@@ -106,11 +106,11 @@ def setup_rotowire_df(format):
     return df
 
 def setup_yahoo_df():
-    jsonurl = urlopen(YAHOO_API_ENDPOINT)
-    text = json.loads(jsonurl.read())
+    text = fetch_yahoo_data()
 
     df = pd.DataFrame(text['players']['result'])
-    df = df[df.gameStartTime.str.startswith('Sun')]
+    # df = df[df.gameStartTime.str.startswith('Sun')]
+    df = df[df.salary > 0] # remove any players with a salary of 0, that's cheating
     df.drop(['sport', 'playerCode', 'gameCode', 'homeTeam', 'awayTeam', 'gameStartTime', 'fppg'], axis=1, inplace=True)
     df['name'] = df['name'].str.strip()
     df.sort_values(by=['salary'], ascending=False, inplace=True)
