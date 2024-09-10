@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 import os, pulp, sys
 
-MUST_HAVE_PLAYER_NAME = "A.J. Brown"
+MUST_HAVE_PLAYER_NAME = "xxxxx"
 
 def open_csv():
     players = pd.read_csv(sys.argv[1])
