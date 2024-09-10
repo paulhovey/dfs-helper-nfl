@@ -5,6 +5,8 @@ from pathlib import Path
 import pandas as pd
 import os, pulp, sys
 
+MUST_HAVE_PLAYER_NAME = "A.J. Brown"
+
 def open_csv():
     players = pd.read_csv(sys.argv[1])
     players = players.loc[:, ~players.columns.str.contains('^Unnamed')]
@@ -27,6 +29,7 @@ def define_problem(players, format):
     wr = {}
     te = {}
     dst = {}
+    must_have = {}
     num_players = {}
 
     vars = []
@@ -44,6 +47,7 @@ def define_problem(players, format):
         wr[decision_var] = player["WR"]
         te[decision_var] = player["TE"]
         dst[decision_var] = player["DST"]
+        must_have[decision_var] = (player["name"].strip() == MUST_HAVE_PLAYER_NAME) # MUST_HAVE_PLAYER_NAME
         num_players[decision_var] = 1.0
 
     objective_function = pulp.LpAffineExpression(total_points)
@@ -56,6 +60,7 @@ def define_problem(players, format):
     TE_constraint = pulp.LpAffineExpression(te)
     DST_constraint = pulp.LpAffineExpression(dst)
     total_players = pulp.LpAffineExpression(num_players)
+    must_have_constraint = pulp.LpAffineExpression(must_have)
 
     if format == 'ownersbox':
         model += (total_cost <= 50000)
@@ -80,6 +85,7 @@ def define_problem(players, format):
         model += (TE_constraint <= 2)
         model += (DST_constraint == 1)
         model += (total_players == 9)
+        model += (must_have_constraint == True)
     return model
 
 def solve(players, model):
