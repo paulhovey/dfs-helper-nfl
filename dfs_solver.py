@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 import os, pulp, sys
 
-MUST_HAVE_PLAYER_NAME = "xxxxx"
+MUST_HAVE_PLAYER_NAME = "xxx yyy"
 
 def open_csv():
     players = pd.read_csv(sys.argv[1])
@@ -47,7 +47,7 @@ def define_problem(players, format):
         wr[decision_var] = player["WR"]
         te[decision_var] = player["TE"]
         dst[decision_var] = player["DST"]
-        must_have[decision_var] = (player["name"].strip() == MUST_HAVE_PLAYER_NAME) # MUST_HAVE_PLAYER_NAME
+        must_have[decision_var] = (player["name"].strip() == MUST_HAVE_PLAYER_NAME)
         num_players[decision_var] = 1.0
 
     objective_function = pulp.LpAffineExpression(total_points)
@@ -85,7 +85,9 @@ def define_problem(players, format):
         model += (TE_constraint <= 2)
         model += (DST_constraint == 1)
         model += (total_players == 9)
-        model += (must_have_constraint == True)
+        # only add in the constraint about needing a player if the player name is matched
+        if (True in must_have.values()):
+            model += (must_have_constraint == True)
     return model
 
 def solve(players, model):
