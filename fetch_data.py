@@ -13,11 +13,19 @@ import pandas as pd
 FP_BASE_URL = 'https://www.fantasypros.com/nfl/projections/{}.php?&scoring=HALF'
 ROTOWIRE_BASE_URL = "https://www.rotowire.com/daily/nfl/value-report.php?site="
 YAHOO_API_ENDPOINT = 'https://dfyql-ro.sports.yahoo.com/v2/external/playersFeed/nfl'
+VEGASRANKS_API_ENDPOINT = 'http://vegasranks.pythonanywhere.com/getVegasRanks?prop=all&format=half'
 
 def fetch_yahoo_data():
     jsonurl = urlopen(YAHOO_API_ENDPOINT)
     data = json.loads(jsonurl.read())
     return data
+
+
+def fetch_vegasranks_data():
+    jsonurl = urlopen(VEGASRANKS_API_ENDPOINT)
+    data = json.loads(jsonurl.read())
+    return data
+
 
 def write_data(data, format):
     if not os.path.exists('./rawdata'):
@@ -76,6 +84,14 @@ def setup_fp_df():
     fp_df['name'] = fp_df['name'].apply(remove_team_abb)
     return fp_df
 
+def setup_vegas_df():
+    vegas_df = fetch_vegasranks_data()
+    vegas_df = vegas_df[['player', 'pts']]
+    vegas_df.columns = ['name', 'points']
+    vegas_df['name'] = vegas_df['name'].str.strip()
+    vegas_df['name'] = vegas_df['name'].apply(remove_team_abb)
+    return vegas_df
+
 def merge_df(df, fp_df):
     # combine the Fantasy Pros dataframe with the OwnersBox one
     df.set_index('name', inplace=True)
@@ -127,7 +143,7 @@ def main():
             df = setup_yahoo_df()
     else: # default to Yahoo DFS
         df = setup_yahoo_df()
-    fp_df = setup_fp_df()
+    fp_df = setup_vegas_df()
     merged = merge_df(df, fp_df)
     write_data(merged, format)
 
