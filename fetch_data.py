@@ -86,11 +86,15 @@ def setup_fp_df():
 
 def setup_vegas_df():
     vegas_df = fetch_vegasranks_data()
-    vegas_df = vegas_df[['player', 'pts']]
-    vegas_df.columns = ['name', 'points']
-    vegas_df['name'] = vegas_df['name'].str.strip()
-    vegas_df['name'] = vegas_df['name'].apply(remove_team_abb)
-    return vegas_df
+    # loop and set values as expected
+    new_vegas_df = []
+    for player in vegas_df:
+        new_vegas_df.append({'name': player['player'].strip(), 'points': player['pts']})
+    # vegas_df = vegas_df[['player', 'pts']]
+    # vegas_df.columns = ['name', 'points']
+    # vegas_df['name'] = vegas_df['name'].str.strip()
+    # vegas_df['name'] = vegas_df['name'].apply(remove_team_abb)
+    return pd.DataFrame(new_vegas_df)
 
 def merge_df(df, fp_df):
     # combine the Fantasy Pros dataframe with the OwnersBox one
@@ -143,6 +147,7 @@ def main():
             df = setup_yahoo_df()
     else: # default to Yahoo DFS
         df = setup_yahoo_df()
+    # fp_df = setup_fp_df()
     fp_df = setup_vegas_df()
     merged = merge_df(df, fp_df)
     write_data(merged, format)

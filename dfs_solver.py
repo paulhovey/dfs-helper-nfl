@@ -76,7 +76,7 @@ def define_problem(players, format):
         model += (total_players == 9)
     else:
         # TODO: config file?
-        model += (total_cost <= 200)
+        model += (total_cost <= 185)
         model += (QB_constraint == 1)
         model += (RB_constraint >= 2)
         model += (RB_constraint <= 3)
@@ -84,8 +84,8 @@ def define_problem(players, format):
         model += (WR_constraint <= 4)
         model += (TE_constraint >= 1)
         model += (TE_constraint <= 2)
-        model += (DST_constraint == 1)
-        model += (total_players == 9)
+        # model += (DST_constraint == 1)
+        model += (total_players == 8)
         # only add in the constraint about needing a player if the player name is matched
         num_must_have_players_match = list(must_have.values()).count(1)
         if (num_must_have_players_match > 0):
